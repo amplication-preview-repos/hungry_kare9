@@ -22,9 +22,6 @@ import { Category } from "./Category";
 import { CategoryFindManyArgs } from "./CategoryFindManyArgs";
 import { CategoryWhereUniqueInput } from "./CategoryWhereUniqueInput";
 import { CategoryUpdateInput } from "./CategoryUpdateInput";
-import { ProductFindManyArgs } from "../../product/base/ProductFindManyArgs";
-import { Product } from "../../product/base/Product";
-import { ProductWhereUniqueInput } from "../../product/base/ProductWhereUniqueInput";
 
 export class CategoryControllerBase {
   constructor(protected readonly service: CategoryService) {}
@@ -38,7 +35,6 @@ export class CategoryControllerBase {
       select: {
         createdAt: true,
         id: true,
-        name: true,
         updatedAt: true,
       },
     });
@@ -54,7 +50,6 @@ export class CategoryControllerBase {
       select: {
         createdAt: true,
         id: true,
-        name: true,
         updatedAt: true,
       },
     });
@@ -71,7 +66,6 @@ export class CategoryControllerBase {
       select: {
         createdAt: true,
         id: true,
-        name: true,
         updatedAt: true,
       },
     });
@@ -97,7 +91,6 @@ export class CategoryControllerBase {
         select: {
           createdAt: true,
           id: true,
-          name: true,
           updatedAt: true,
         },
       });
@@ -123,7 +116,6 @@ export class CategoryControllerBase {
         select: {
           createdAt: true,
           id: true,
-          name: true,
           updatedAt: true,
         },
       });
@@ -135,88 +127,5 @@ export class CategoryControllerBase {
       }
       throw error;
     }
-  }
-
-  @common.Get("/:id/products")
-  @ApiNestedQuery(ProductFindManyArgs)
-  async findProducts(
-    @common.Req() request: Request,
-    @common.Param() params: CategoryWhereUniqueInput
-  ): Promise<Product[]> {
-    const query = plainToClass(ProductFindManyArgs, request.query);
-    const results = await this.service.findProducts(params.id, {
-      ...query,
-      select: {
-        category: {
-          select: {
-            id: true,
-          },
-        },
-
-        createdAt: true,
-        description: true,
-        id: true,
-        name: true,
-        price: true,
-        updatedAt: true,
-      },
-    });
-    if (results === null) {
-      throw new errors.NotFoundException(
-        `No resource was found for ${JSON.stringify(params)}`
-      );
-    }
-    return results;
-  }
-
-  @common.Post("/:id/products")
-  async connectProducts(
-    @common.Param() params: CategoryWhereUniqueInput,
-    @common.Body() body: ProductWhereUniqueInput[]
-  ): Promise<void> {
-    const data = {
-      products: {
-        connect: body,
-      },
-    };
-    await this.service.updateCategory({
-      where: params,
-      data,
-      select: { id: true },
-    });
-  }
-
-  @common.Patch("/:id/products")
-  async updateProducts(
-    @common.Param() params: CategoryWhereUniqueInput,
-    @common.Body() body: ProductWhereUniqueInput[]
-  ): Promise<void> {
-    const data = {
-      products: {
-        set: body,
-      },
-    };
-    await this.service.updateCategory({
-      where: params,
-      data,
-      select: { id: true },
-    });
-  }
-
-  @common.Delete("/:id/products")
-  async disconnectProducts(
-    @common.Param() params: CategoryWhereUniqueInput,
-    @common.Body() body: ProductWhereUniqueInput[]
-  ): Promise<void> {
-    const data = {
-      products: {
-        disconnect: body,
-      },
-    };
-    await this.service.updateCategory({
-      where: params,
-      data,
-      select: { id: true },
-    });
   }
 }
