@@ -11,16 +11,7 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import {
-  IsString,
-  IsOptional,
-  MaxLength,
-  ValidateNested,
-  IsEnum,
-} from "class-validator";
-import { OrderCreateNestedManyWithoutUsersInput } from "./OrderCreateNestedManyWithoutUsersInput";
-import { Type } from "class-transformer";
-import { EnumUserRole } from "./EnumUserRole";
+import { IsString, IsOptional, MaxLength } from "class-validator";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
@@ -63,35 +54,12 @@ class UserCreateInput {
   lastName?: string | null;
 
   @ApiProperty({
-    required: false,
-    type: () => OrderCreateNestedManyWithoutUsersInput,
-  })
-  @ValidateNested()
-  @Type(() => OrderCreateNestedManyWithoutUsersInput)
-  @IsOptional()
-  @Field(() => OrderCreateNestedManyWithoutUsersInput, {
-    nullable: true,
-  })
-  orders?: OrderCreateNestedManyWithoutUsersInput;
-
-  @ApiProperty({
     required: true,
     type: String,
   })
   @IsString()
   @Field(() => String)
   password!: string;
-
-  @ApiProperty({
-    required: false,
-    enum: EnumUserRole,
-  })
-  @IsEnum(EnumUserRole)
-  @IsOptional()
-  @Field(() => EnumUserRole, {
-    nullable: true,
-  })
-  role?: "Option1" | null;
 
   @ApiProperty({
     required: true,
